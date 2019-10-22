@@ -1,5 +1,5 @@
 {
-  "name": "@alkocats/ex-ai",
+  "name": "@alkocats/k-means",
   "version": "0.0.1",
   "description": "ExAI",
   "main": "build/index.js",
@@ -7,7 +7,7 @@
   "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Rothen/ex-ai.git"
+    "url": "git+https://github.com/alkocats/k-means.git"
   },
   "devDependencies": {
     "@types/chai": "^4.2.3",
@@ -36,13 +36,14 @@
   },
   "keywords": [
     "alkocats",
-    "ex-ai",
-    "ai"
+    "k-means",
+    "ai",
+    "cluster"
   ],
   "author": "Benjamin Ricchiuto",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Rothen/ex-ai/issues"
+    "url": "https://github.com/alkocats/k-means/issues"
   },
-  "homepage": "https://github.com/Rothen/ex-ai#readme"
+  "homepage": "https://github.com/alkocats/k-means#readme"
 }
