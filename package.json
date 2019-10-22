@@ -1,7 +1,7 @@
 {
   "name": "@alkocats/k-means",
   "version": "0.0.1",
-  "description": "ExAI",
+  "description": "A typescript of the k-means algorithm.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {},
