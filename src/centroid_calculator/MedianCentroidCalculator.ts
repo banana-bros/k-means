@@ -4,13 +4,23 @@ import { Matrix } from '../type/Matrix';
 
 export class MedianCentroidCalculator extends CentroidCalculator {
     public calculate(vectors: Vector[] | Matrix): Vector {
+        const parts: Matrix = this.createParts(vectors);
+
+        this.transpose(parts, vectors);
+        return this.calculateMean(parts);
+    }
+
+    private createParts(vectors: Vector[] | Matrix): Matrix {
         const parts: Matrix = [];
-        const result: Vector = [];
 
         for (let i = 0; i < vectors[0].length; i++) {
             parts[i] = [];
         }
 
+        return parts;
+    }
+
+    private transpose(parts: Matrix, vectors: Vector[] | Matrix): void {
         for (let i = 0; i < vectors.length; i++) {
             const vector = vectors[i];
 
@@ -18,6 +28,10 @@ export class MedianCentroidCalculator extends CentroidCalculator {
                 parts[j].push(vector[j]);
             }
         }
+    }
+
+    private calculateMean(parts: Matrix): Vector {
+        const result: Vector = [];
 
         for (let i = 0; i < parts.length; i++) {
             parts[i] = parts[i].sort();
