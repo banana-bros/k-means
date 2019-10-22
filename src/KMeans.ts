@@ -7,6 +7,7 @@ import { Vector } from './type/Vector';
 import { Matrix } from './type/Matrix';
 import { Result } from './type/Result';
 import { Options, CentroidSelection } from './type/Options';
+import { resolve } from 'dns';
 
 export class KMeans {
     private _vectors: Vector[] | Matrix = [];
@@ -58,7 +59,7 @@ export class KMeans {
         let centroidsHaveChanged = true;
         let iterations = 0;
 
-        while (iterations < this.maxIterations && centroidsHaveChanged) {
+        while (iterations < this.options.maxIterations && centroidsHaveChanged) {
             this.next();
             iterations++;
             centroidsHaveChanged = this.centroidsHaveChanged();
@@ -68,7 +69,7 @@ export class KMeans {
     }
 
     private generateStartingClusters() {
-        switch (this.centroidSelection) {
+        switch (this.options.centroidSelection) {
             case CentroidSelection.RANDOM:
                 this.generateStartingClustersByRandomCentroids();
                 break;
@@ -79,12 +80,12 @@ export class KMeans {
                 this.generateStartingClustersByKMeansPlusPlus();
                 break;
             default:
-                throw new Error(`${this.centroidSelection} is not a valid centroid selection.`);
+                throw new Error(`${this.options.centroidSelection} is not a valid centroid selection.`);
         }
     }
 
     private generateStartingClustersByRandomCentroids() {
-        for (let i = 0; i < this.clusterCount; i++) {
+        for (let i = 0; i < this.options.clusterCount; i++) {
             const cluster = new Cluster();
             const index = Math.round(Math.random() * this.vectors.length - 1);
             const centroid = this.vectors[index];
@@ -95,37 +96,26 @@ export class KMeans {
     }
 
     private generateStartingClustersByGivenCentroids() {
-        if (this.centroids === null || this.centroids.length !== this.clusterCount) {
-            throw new Error(`Number of centroids must equal ${this.clusterCount}`);
+        if (this.options.centroids === null || this.options.centroids.length !== this.options.clusterCount) {
+            throw new Error(`Number of centroids must equal ${this.options.clusterCount}`);
         }
 
-        for (let i = 0; i < this.clusterCount; i++) {
+        for (let i = 0; i < this.options.clusterCount; i++) {
             const cluster = new Cluster();
 
-            cluster.centroid = this.centroids[i];
+            cluster.centroid = this.options.centroids[i];
             this.clusters.push(cluster);
         }
     }
 
     private generateStartingClustersByKMeansPlusPlus() {
-        let mean = this.vectors[Math.round(Math.random() * this.vectors.length - 1)];
-        let newCluster = new Cluster();
-        newCluster.centroid = mean;
+        const randomIndex = Math.random() * this.vectors.length - 1;
+        let newCluster = new Cluster(this.vectors[randomIndex]);
+
         this.clusters.push(newCluster);
 
-        for (let i = 1; i < this.clusterCount; i++) {
-            let res: Vector;
-            let high = -Infinity;
-
-            for (const vector of this.vectors) {
-                const nearest = this.getNearestCluster(vector);
-                let dist = this.metric.calculate(vector, nearest.centroid);
-
-                if (dist > high) {
-                    res = vector;
-                    high = dist;
-                }
-            }
+        for (let i = 1; i < this.options.clusterCount; i++) {
+            const res = this.generateNextCluster();
 
             newCluster = new Cluster();
             newCluster.centroid = res;
@@ -133,12 +123,29 @@ export class KMeans {
         }
     }
 
+    private generateNextCluster(): Vector {
+        let res: Vector;
+        let high = -Infinity;
+
+        for (const vector of this.vectors) {
+            const nearest = this.getNearestCluster(vector);
+            let dist = this.options.metric.calculate(vector, nearest.centroid);
+
+            if (dist > high) {
+                res = vector;
+                high = dist;
+            }
+        }
+
+        return res;
+    }
+
     private calculateMeanSquaredError() {
         this._meanSquaredError = 0;
 
         for (const cluster of this.clusters) {
             for (const vector of cluster.vectors) {
-                const distance = this.metric.calculate(vector, cluster.centroid);
+                const distance = this.options.metric.calculate(vector, cluster.centroid);
                 this._meanSquaredError += distance;
             }
         }
@@ -167,7 +174,7 @@ export class KMeans {
         }
 
         for (const cluster of this.clusters) {
-            const newCentroid = this.centroidCalculator.calculate(cluster.vectors);
+            const newCentroid = this.options.centroidCalculator.calculate(cluster.vectors);
             cluster.centroid = newCentroid;
         }
     }
@@ -177,8 +184,8 @@ export class KMeans {
 
         for (let i = 1; i < this.clusters.length; i++) {
             const cluster = this.clusters[i];
-            const newDistance = this.metric.calculate(vector, cluster.centroid);
-            const currentDistance = this.metric.calculate(vector, currentCluster.centroid);
+            const newDistance = this.options.metric.calculate(vector, cluster.centroid);
+            const currentDistance = this.options.metric.calculate(vector, currentCluster.centroid);
 
             if (newDistance <= currentDistance) {
                 currentCluster = cluster;
@@ -198,53 +205,5 @@ export class KMeans {
 
     get meanSquaredError(): number {
         return this._meanSquaredError;
-    }
-
-    get metric(): Metric {
-        return this.options.metric;
-    }
-
-    set metric(metric: Metric) {
-        this.options.metric = metric;
-    }
-
-    get centroidCalculator(): CentroidCalculator {
-        return this.options.centroidCalculator;
-    }
-
-    set centroidCalculator(centroidCalculator: CentroidCalculator) {
-        this.options.centroidCalculator = centroidCalculator;
-    }
-
-    get clusterCount(): number {
-        return this.options.clusterCount;
-    }
-
-    set clusterCount(clusterCount: number) {
-        this.options.clusterCount = clusterCount;
-    }
-
-    get maxIterations(): number {
-        return this.options.maxIterations;
-    }
-
-    set maxIterations(maxIterations: number) {
-        this.options.maxIterations = maxIterations;
-    }
-
-    get centroidSelection(): CentroidSelection {
-        return this.options.centroidSelection;
-    }
-
-    set centroidSelection(centroidSelection: CentroidSelection) {
-        this.options.centroidSelection = centroidSelection;
-    }
-
-    get centroids(): Vector[] | Matrix {
-        return this.options.centroids;
-    }
-
-    set centroids(centroids: Vector[] | Matrix) {
-        this.options.centroids = centroids;
     }
 }

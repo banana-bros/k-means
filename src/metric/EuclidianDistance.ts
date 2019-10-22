@@ -8,6 +8,7 @@ export class EuclidianDistance extends Metric {
         for (let i = 0; i < vectorA.length; i++) {
             sum += Math.pow(vectorA[i] - vectorB[i], 2);
         }
+
         return sum;
     }
 }

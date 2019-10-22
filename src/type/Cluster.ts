@@ -3,9 +3,11 @@ import { Vector } from './Vector';
 export class Cluster {
     private _vectors: Vector[] = [];
     private _lastCentroid: Vector = null;
-    private _centroid: Vector = null;
+    private _centroid: Vector;
 
-    constructor() {}
+    constructor(centroid: Vector = null) {
+        this.centroid = centroid;
+    }
 
     public addVector(vector: Vector): void {
         this._vectors.push(vector);
