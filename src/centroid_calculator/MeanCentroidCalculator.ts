@@ -7,12 +7,7 @@ export class MeanCentroidCalculator extends CentroidCalculator {
         const result: Vector = [];
 
         for (let i = 0; i < vectors.length; i++) {
-            for (let j = 0; j < vectors[i].length; j++) {
-                if (!result[j]) {
-                    result[j] = 0;
-                }
-                result[j] += vectors[i][j];
-            }
+            this.sumUpVectors(result, vectors[i]);
         }
 
         for (let k = 0; k < result.length; k++) {
@@ -20,5 +15,14 @@ export class MeanCentroidCalculator extends CentroidCalculator {
         }
 
         return result;
+    }
+
+    private sumUpVectors(result: Vector, vector: Vector): void {
+        for (let j = 0; j < vector.length; j++) {
+            if (!result[j]) {
+                result[j] = 0;
+            }
+            result[j] += vector[j];
+        }
     }
 }
