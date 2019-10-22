@@ -34,6 +34,18 @@ export class Cluster {
     }
 
     public centroidHasChanged(): boolean {
+        if (this._centroid === this._lastCentroid) {
+            return false;
+        }
+
+        if (this._centroid === null || this._lastCentroid === null) {
+            return true;
+        }
+
+        if (this._centroid.length !== this._lastCentroid.length) {
+            return true;
+        }
+
         for (let i = 0; i < this._centroid.length; i++) {
             if (this._centroid[i] !== this.lastCentroid[i]) {
                 return true;
