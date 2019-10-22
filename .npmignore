@@ -1,3 +1,5 @@
+.vscode/
+data/
 src/
 spec/
 coverage/
