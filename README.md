@@ -1,13 +1,13 @@
-# EX-AI
+# k-means
 
-[![Build Status](https://travis-ci.org/Rothen/ex-ai.svg?branch=master)](https://travis-ci.org/Rothen/ex-ai)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/3b112a2ee0b340b63215/test_coverage)](https://codeclimate.com/github/Rothen/ex-ai/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/3b112a2ee0b340b63215/maintainability)](https://codeclimate.com/github/Rothen/ex-ai/maintainability)
+[![Build Status](https://travis-ci.org/alkocats/k-means.svg?branch=master)](https://travis-ci.org/alkocats/k-means)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/3b112a2ee0b340b63215/test_coverage)](https://codeclimate.com/github/alkocats/k-means/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/3b112a2ee0b340b63215/maintainability)](https://codeclimate.com/github/alkocats/k-means/maintainability)
 [![npm version](https://badge.fury.io/js/%40alkocats%2Fex-math.svg)](https://badge.fury.io/js/%40alkocats%2Fex-math)
-[![MIT License](https://img.shields.io/github/license/Rothen/ex-ai.svg)](https://github.com/Rothen/ex-ai/blob/master/LICENSE)
-[![Known Vulnerabilities](https://snyk.io/test/github/Rothen/ex-ai/badge.svg)](https://snyk.io/test/github/Rothen/ex-ai)
-[![dependencies Status](https://david-dm.org/Rothen/ex-ai/status.svg)](https://david-dm.org/Rothen/ex-ai)
-[![devDependencies Status](https://david-dm.org/Rothen/ex-ai/dev-status.svg)](https://david-dm.org/Rothen/ex-ai?type=dev)
+[![MIT License](https://img.shields.io/github/license/alkocats/k-means.svg)](https://github.com/alkocats/k-means/blob/master/LICENSE)
+[![Known Vulnerabilities](https://snyk.io/test/github/alkocats/k-means/badge.svg)](https://snyk.io/test/github/alkocats/k-means)
+[![dependencies Status](https://david-dm.org/alkocats/k-means/status.svg)](https://david-dm.org/alkocats/k-means)
+[![devDependencies Status](https://david-dm.org/alkocats/k-means/dev-status.svg)](https://david-dm.org/alkocats/k-means?type=dev)
 
 - [Installation](#installation)
 - [Usage](#usage)
