@@ -38,19 +38,29 @@ export class Cluster {
             return false;
         }
 
-        if (this._centroid === null || this._lastCentroid === null || this._centroid.length !== this._lastCentroid.length) {
-            return true;
-        }
-
         let hasChanged = false;
+
+        try {
+            hasChanged = this.compareCentroids();
+        } catch (error) {
+            hasChanged = true;
+        } finally {
+            return hasChanged;
+        }
+    }
+
+    private compareCentroids(): boolean {
+        if (this._centroid.length !== this._lastCentroid.length) {
+            throw new Error();
+        }
 
         for (let i = 0; i < this._centroid.length; i++) {
             if (this._centroid[i] !== this.lastCentroid[i]) {
-                hasChanged = true;
-                break;
+                return true;
             }
         }
-        return hasChanged;
+
+        return false;
     }
 
     get centroid(): Vector {

@@ -77,32 +77,79 @@ describe('Cluster', () => {
         expect(cluster.centroidHasChanged()).to.be.true;
     });
 
-    it('should correctly determine if the centroid has changed if only the centroid is null', () => {
+    it('should correctly determine if the centroid has changed when only the centroid is null', () => {
         let cluster = new Cluster();
         cluster['_centroid'] = null;
         cluster['_lastCentroid'] = [1, 2, 4];
         expect(cluster.centroidHasChanged()).to.be.true;
     });
 
-    it('should correctly determine if the centroid has changed if only the last centroid is null', () => {
+    it('should correctly determine if the centroid has changed when only the last centroid is null', () => {
         let cluster = new Cluster();
         cluster['_centroid'] = [1, 2, 4];
         cluster['_lastCentroid'] = null;
         expect(cluster.centroidHasChanged()).to.be.true;
     });
 
-    it('should correctly determine if the centroid has changed if both centroids are null', () => {
+    it('should correctly determine if the centroid has changed when both centroids are null', () => {
         let cluster = new Cluster();
         cluster['_centroid'] = null;
         cluster['_lastCentroid'] = null;
         expect(cluster.centroidHasChanged()).to.be.false;
     });
 
-    it('should correctly determine if the centroid has changed if both centroids are null', () => {
+    it('should return false when compareing two 3D same centroids', () => {
+        let cluster = new Cluster();
+        cluster['_centroid'] = [1, 2, 3];
+        cluster['_lastCentroid'] = [1, 2, 3];
+        expect(cluster['compareCentroids']()).to.be.false;
+    });
+
+    it('should return true when compareing two 3D different centroids', () => {
+        let cluster = new Cluster();
+        cluster['_centroid'] = [1, 2, 4];
+        cluster['_lastCentroid'] = [1, 2, 3];
+        expect(cluster['compareCentroids']()).to.be.true;
+    });
+
+    it('should throw when compareing centroids if the centroid has changed in size aswell', () => {
+        let cluster = new Cluster();
+        cluster['_centroid'] = [1, 2, 4];
+        cluster['_lastCentroid'] = [1, 2];
+        const compareCentroids = () => { cluster['compareCentroids'](); };
+        expect(compareCentroids).to.throw();
+    });
+
+    it('should throw when compareing centroids if the last centroid has changed in size aswell', () => {
+        let cluster = new Cluster();
+        cluster['_centroid'] = [1, 2];
+        cluster['_lastCentroid'] = [1, 2, 4];
+        const compareCentroids = () => { cluster['compareCentroids'](); };
+        expect(compareCentroids).to.throw();
+    });
+
+    it('should throw when compareing centroids if only the centroid is null', () => {
+        let cluster = new Cluster();
+        cluster['_centroid'] = null;
+        cluster['_lastCentroid'] = [1, 2, 4];
+        const compareCentroids = () => { cluster['compareCentroids'](); };
+        expect(compareCentroids).to.throw();
+    });
+
+    it('should throw when compareing centroids if only the last centroid is null', () => {
+        let cluster = new Cluster();
+        cluster['_centroid'] = [1, 2, 4];
+        cluster['_lastCentroid'] = null;
+        const compareCentroids = () => { cluster['compareCentroids'](); };
+        expect(compareCentroids).to.throw();
+    });
+
+    it('should throw when compareing centroids if both centroids are null', () => {
         let cluster = new Cluster();
         cluster['_centroid'] = null;
         cluster['_lastCentroid'] = null;
-        expect(cluster.centroidHasChanged()).to.be.false;
+        const compareCentroids = () => { cluster['compareCentroids'](); };
+        expect(compareCentroids).to.throw();
     });
 
     it('should return the centroid', () => {
