@@ -1,6 +1,7 @@
 import { expect } from 'chai';
-import { KMeans, Cluster } from '../src';
+import { KMeans, Cluster, CentroidCalculator } from '../src';
 import { Vector } from '../src/type/Vector';
+import { CentroidSelection } from '../src/type/Options';
 
 describe('KMeans', () => {
     beforeEach(() => {
@@ -23,7 +24,8 @@ describe('KMeans', () => {
         ];
         const kMeans: KMeans = new KMeans({
             clusterCount: 2,
-            centroids: [[1, 1], [5, 7]]
+            centroids: [[1, 1], [5, 7]],
+            centroidSelection: CentroidSelection.PREDEFINED
         });
         const result = kMeans.fit(testPoints);
 

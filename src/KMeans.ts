@@ -109,7 +109,7 @@ export class KMeans {
     }
 
     private generateStartingClustersByKMeansPlusPlus() {
-        const randomIndex = Math.random() * this.vectors.length - 1;
+        const randomIndex = Math.round(Math.random() * this.vectors.length - 1);
         let newCluster = new Cluster(this.vectors[randomIndex]);
 
         this.clusters.push(newCluster);
