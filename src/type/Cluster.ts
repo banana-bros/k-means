@@ -34,24 +34,24 @@ export class Cluster {
     }
 
     public centroidHasChanged(): boolean {
-        if (this._centroid === this._lastCentroid) {
+        if (this._centroid === null && this._lastCentroid === null) {
             return false;
         }
 
-        if (this._centroid === null || this._lastCentroid === null) {
-            return true;
-        }
+        let hasChanged = false;
 
-        if (this._centroid.length !== this._lastCentroid.length) {
-            return true;
-        }
-
-        for (let i = 0; i < this._centroid.length; i++) {
-            if (this._centroid[i] !== this.lastCentroid[i]) {
-                return true;
+        try {
+            for (let i = 0; i < Math.max(this._centroid.length, this._lastCentroid.length); i++) {
+                if (this._centroid[i] !== this.lastCentroid[i]) {
+                    hasChanged = true;
+                    break;
+                }
             }
+        } catch (error) {
+            hasChanged = true;
+        } finally {
+            return hasChanged;
         }
-        return false;
     }
 
     get centroid(): Vector {
