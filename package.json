@@ -1,6 +1,6 @@
 {
   "name": "@alkocats/k-means",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A typescript of the k-means algorithm.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
