@@ -1,9 +1,8 @@
 import { expect } from 'chai';
-import { Cluster } from '../../src/type/Cluster';
+import { Cluster } from '../../src';
 
 describe('Cluster', () => {
-    beforeEach(() => {
-    });
+    beforeEach(() => {});
 
     it('should be created', () => {
         let cluster = new Cluster();
