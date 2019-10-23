@@ -1,3 +1,1 @@
-export type Vector = {
-    [V in keyof number[]]?: number[][V]
-};
+export type Vector = number[];

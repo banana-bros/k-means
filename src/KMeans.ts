@@ -1,13 +1,10 @@
 import { Cluster } from './type/Cluster';
-import { Metric } from './metric/Metric';
-import { CentroidCalculator } from './centroid_calculator/CentroidCalculator';
 import { EuclidianDistance } from './metric/EuclidianDistance';
 import { MeanCentroidCalculator } from './centroid_calculator/MeanCentroidCalculator';
 import { Vector } from './type/Vector';
 import { Matrix } from './type/Matrix';
 import { Result } from './type/Result';
 import { Options, CentroidSelection } from './type/Options';
-import { resolve } from 'dns';
 
 export class KMeans {
     private _vectors: Vector[] | Matrix = [];

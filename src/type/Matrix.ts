@@ -1,3 +1,3 @@
-export type Matrix = {
-    [M in keyof number[][]]?: number[][][M]
-};
+import { Vector } from './Vector';
+
+export type Matrix = Vector[] | number[][];
