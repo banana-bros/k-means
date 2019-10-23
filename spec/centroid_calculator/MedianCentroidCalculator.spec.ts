@@ -10,6 +10,10 @@ describe('MedianCentroidCalculator', () => {
         expect(metric).to.be.ok;
     });
 
+    it('should calcualte the median centroid of one 2D vectors', () => {
+        expect(metric.calculate([[0, 0]])).to.eql([0, 0]);
+    });
+
     it('should calcualte the median centroid of two 2D vectors', () => {
         expect(metric.calculate([[0, 0], [2, 2]])).to.eql([1, 1]);
     });
