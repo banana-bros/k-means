@@ -36,12 +36,12 @@ export class MedianCentroidCalculator extends CentroidCalculator {
         for (let i = 0; i < parts.length; i++) {
             parts[i] = parts[i].sort();
             let dataCount = parts[i].length;
-            let index = (dataCount * 50 / 100) - 1;
+            let index = (dataCount / 2) - 1;
 
-            if (index % 0 > 1) {
-                result[i] = (parts[i][index] + parts[i][index + 1]) / 2;
-            } else {
+            if (index % 1 > 0) {
                 result[i] = parts[i][Math.ceil(index)];
+            } else {
+                result[i] = (parts[i][index] + parts[i][index + 1]) / 2;
             }
         }
 
