@@ -9,6 +9,9 @@
     "type": "git",
     "url": "git+https://github.com/alkocats/k-means.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "@types/chai": "^4.2.3",
     "@types/mocha": "^5.2.7",
