@@ -6,8 +6,6 @@
 [![npm version](https://badge.fury.io/js/%40alkocats%2Fk-means.svg)](https://badge.fury.io/js/%40alkocats%2Fk-means)
 [![MIT License](https://img.shields.io/github/license/alkocats/k-means.svg)](https://github.com/alkocats/k-means/blob/master/LICENSE)
 [![Known Vulnerabilities](https://snyk.io/test/github/alkocats/k-means/badge.svg)](https://snyk.io/test/github/alkocats/k-means)
-[![dependencies Status](https://david-dm.org/alkocats/k-means/status.svg)](https://david-dm.org/alkocats/k-means)
-[![devDependencies Status](https://david-dm.org/alkocats/k-means/dev-status.svg)](https://david-dm.org/alkocats/k-means?type=dev)
 
 - [Installation](#installation)
 - [Usage](#usage)

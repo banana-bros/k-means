@@ -2,7 +2,7 @@ import { CentroidCalculator } from './CentroidCalculator';
 import { Vector } from '../type/Vector';
 import { Matrix } from '../type/Matrix';
 
-export class MedianCentroidCalculator extends CentroidCalculator {
+export class MedianCentroidCalculator implements CentroidCalculator {
     public calculate(vectors: Vector[] | Matrix): Vector {
         if (vectors.length === 1) {
             return vectors[0];
