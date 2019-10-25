@@ -11,6 +11,11 @@ This package is a typescript implementation of the k-means algorithm with differ
 
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Options](#options)
+  - [Metrics](#metrics)
+  - [Centroid Calculators](#centroid-calculators)
+  - [CentroidSelection](#centroidselection)
+  - [EmptyAction](#emptyaction)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -58,6 +63,39 @@ console.log(result.clusters[1].centroid);
 console.log(result.clusters[1].vectors);
 // [ [ 1, 1 ], [ 1.5, 2 ] ]
 ```
+
+### Options
+
+| Name                 | Type                 | Default                        |
+| -------------------- | -------------------- | ------------------------------ |
+| `metric`             | `Metric`             | `new EuclidianDistance()`      |
+| `centroidCalculator` | `CentroidCalculator` | `new MeanCentroidCalculator()` |
+| `clusterCount`       | `number`             | `1`                            |
+| `maxIterations`      | `number`             | `100`                          |
+| `centroidSelection`  | `CentroidSelection`  | `CentroidSelection.RANDOM`     |
+| `centroids`          | `Vector[] | Matrix`  | `null`                         |
+| `emptyAction`        | `EmptyAction`        | `EmptyAction.DROP`             |
+
+### Metrics
+
+- `new EuclidianDistance()`: Calculates the euclidian distance between two vectors with the same number of elements (n).
+- `new ManhattanDistance()`: Calculates the manhattan distance between two vectors with the same number of elements (n).
+
+### Centroid Calculators
+
+- `new MeanCentroidCalculator()`: Calculates the center of an array of vectors according to the mean of the vectors.
+- `new MedianCentroidCalculator()`: Calculates the center of an array of vectors according to the median of the vectors.
+
+### CentroidSelection
+
+- `CentroidSelection.RANDOM`: Generates n (accodring to `clusterCount`) starting centroids by selecting random points within the vector limits.
+- `CentroidSelection.PREDEFINED`: Takes the centroids given by `centroids` as the starting centroids.
+- `CentroidSelection.KMEANSPLUSPLUS`: Uses the k-means++ algorithm to determine the starting centroid.
+
+### EmptyAction
+
+- `EmptyAction.DROP`: Deletes a cluster if it does not have any vectors assigned to.
+- `EmptyAction.ERROR`: Throws an error if any cluster does not have any vectors assigned to.
 
 ## Contributing
 
