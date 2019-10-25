@@ -9,6 +9,11 @@ export enum CentroidSelection {
     KMEANSPLUSPLUS
 }
 
+export enum EmptyAction {
+    DROP,
+    ERROR
+}
+
 export interface Options {
     metric?: Metric;
     centroidCalculator?: CentroidCalculator;
@@ -16,4 +21,5 @@ export interface Options {
     maxIterations?: number;
     centroidSelection?: CentroidSelection;
     centroids?: Vector[] | Matrix;
+    emptyAction?: EmptyAction;
 }

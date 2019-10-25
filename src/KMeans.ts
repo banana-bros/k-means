@@ -4,7 +4,7 @@ import { MeanCentroidCalculator } from './centroid_calculator/MeanCentroidCalcul
 import { Vector } from './type/Vector';
 import { Matrix } from './type/Matrix';
 import { Result } from './type/Result';
-import { Options, CentroidSelection } from './type/Options';
+import { Options, CentroidSelection, EmptyAction } from './type/Options';
 
 export class KMeans {
     private _vectors: Vector[] | Matrix = [];
@@ -13,10 +13,11 @@ export class KMeans {
     private options: Options = {
         metric: new EuclidianDistance(),
         centroidCalculator: new MeanCentroidCalculator(),
-        clusterCount: 0,
+        clusterCount: 1,
         maxIterations: 100,
         centroidSelection: CentroidSelection.RANDOM,
-        centroids: null
+        centroids: null,
+        emptyAction: EmptyAction.DROP
     };
 
     constructor(options: Options = {}) {
@@ -83,12 +84,9 @@ export class KMeans {
 
     private generateStartingClustersByRandomCentroids() {
         for (let i = 0; i < this.options.clusterCount; i++) {
-            const cluster = new Cluster();
             const index = Math.round(Math.random() * this.vectors.length - 1);
             const centroid = this.vectors[index];
-
-            cluster.initCentroid(centroid);
-            this.clusters.push(cluster);
+            this.clusters.push(new Cluster(centroid));
         }
     }
 
@@ -170,9 +168,28 @@ export class KMeans {
             nearestCluster.addVector(vector);
         }
 
+        this.recalculateClusterCentroids();
+    }
+
+    private recalculateClusterCentroids(): void {
         for (const cluster of this.clusters) {
-            const newCentroid = this.options.centroidCalculator.calculate(cluster.vectors);
-            cluster.centroid = newCentroid;
+            if (cluster.vectors && cluster.vectors.length > 0) {
+                const newCentroid = this.options.centroidCalculator.calculate(cluster.vectors);
+                cluster.centroid = newCentroid;
+            } else {
+                this.handleEmptyCluster(cluster);
+            }
+        }
+    }
+
+    private handleEmptyCluster(cluster: Cluster): void {
+        switch (this.options.emptyAction) {
+            case EmptyAction.DROP:
+                this._clusters.splice(this._clusters.indexOf(cluster), 1);
+                break;
+            case EmptyAction.ERROR:
+            default:
+                throw new Error();
         }
     }
 
