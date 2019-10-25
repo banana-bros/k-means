@@ -141,7 +141,7 @@ export class KMeans {
         for (const cluster of this.clusters) {
             for (const vector of cluster.vectors) {
                 const distance = this.options.metric.calculate(vector, cluster.centroid);
-                this._meanSquaredError += distance;
+                this._meanSquaredError += Math.pow(distance, 2);
             }
         }
 

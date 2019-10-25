@@ -2,7 +2,7 @@ import { CentroidCalculator } from './CentroidCalculator';
 import { Vector } from '../type/Vector';
 import { Matrix } from '../type/Matrix';
 
-export class MeanCentroidCalculator extends CentroidCalculator {
+export class MeanCentroidCalculator implements CentroidCalculator {
     public calculate(vectors: Vector[] | Matrix): Vector {
         const result: Vector = [];
 
