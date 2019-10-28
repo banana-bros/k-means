@@ -3,6 +3,7 @@ import * as spies from 'chai-spies';
 import { KMeans, Cluster, ManhattanDistance } from '../../src';
 import { Vector } from '../../src/type/Vector';
 import { CentroidSelection } from '../../src/type/Options';
+import { kMaxLength } from 'buffer';
 
 use(spies);
 
@@ -11,9 +12,6 @@ public fit(vectors: Vector[] | Matrix): Result {
 public predict(vectors: Vector[] | Matrix): number[] {
 private prepareIteration(vectors: Vector[] | Matrix): void {
 private iterate(): number {
-private generateStartingClustersByRandomCentroids() {
-private generateStartingClustersByGivenCentroids() {
-private generateStartingClustersByKMeansPlusPlus() {
 private generateNextCluster(): Vector {
 private centroidsHaveChanged(): boolean {
 private next(): void {
@@ -84,24 +82,24 @@ describe('KMeans', () => {
 
     it('should calculate mean squared error correctly when metric is EuclidianDistance', () => {
         const kMeans = new KMeans();
-        const cluster1 = new Cluster([0, 0]);
-        const cluster2 = new Cluster([-1, 1]);
+        const cluster0 = new Cluster([0, 0]);
+        const cluster1 = new Cluster([-1, 1]);
 
-        cluster1['_vectors'] = [
+        cluster0['_vectors'] = [
             [1, 1],
             [2, 3],
             [-1, 0]
         ];
 
-        cluster2['_vectors'] = [
+        cluster1['_vectors'] = [
             [-2, 5],
             [7, 7],
             [3, 0]
         ];
 
         kMeans['_clusters'] = [
-            cluster1,
-            cluster2
+            cluster0,
+            cluster1
         ];
 
         kMeans['calculateMeanSquaredError']();
@@ -109,28 +107,225 @@ describe('KMeans', () => {
         expect(kMeans.meanSquaredError).to.equal(25);
     });
 
+    it('should generate starting clusters by random centroids correctly', () => {
+        const kMeans = new KMeans({
+            clusterCount: 2
+        });
+
+        kMeans['_vectors'] = [
+            [1, 1],
+            [0, 0]
+        ];
+
+        kMeans['generateStartingClustersByRandomCentroids']();
+
+        let cluster0 = kMeans.clusters[0];
+        let cluster1 = kMeans.clusters[1];
+
+        if (cluster0.centroid[0] < cluster1.centroid[0]) {
+            const tempCluster = cluster0;
+            cluster0 = cluster1;
+            cluster1 = tempCluster;
+        }
+
+        expect(cluster0.centroid).to.eql([1, 1]);
+        expect(cluster1.centroid).to.eql([0, 0]);
+    });
+
+    it('should throw an error when generating starting clusters by random with not enough vectors', () => {
+        const kMeans = new KMeans({
+            clusterCount: 2
+        });
+
+        const errorFn = () => kMeans['generateStartingClustersByRandomCentroids']();
+
+        kMeans['_vectors'] = [
+            [1, 1]
+        ];
+
+        expect(errorFn).to.throw;
+    });
+
+    it('should throw an error when generating starting clusters by random with no vectors', () => {
+        const kMeans = new KMeans({
+            clusterCount: 2
+        });
+
+        const errorFn = () => kMeans['generateStartingClustersByRandomCentroids']();
+
+        kMeans['_vectors'] = [];
+
+        expect(errorFn).to.throw;
+    });
+
+    it('should throw an error when generating starting clusters by random with null vectors', () => {
+        const kMeans = new KMeans({
+            clusterCount: 2
+        });
+
+        const errorFn = () => kMeans['generateStartingClustersByRandomCentroids']();
+
+        kMeans['_vectors'] = [];
+
+        expect(errorFn).to.throw;
+    });
+
+    it('should generate starting clusters by given centroids', () => {
+        const kMeans = new KMeans({
+            clusterCount: 2,
+            centroids: [
+                [0, 0],
+                [1, 1]
+            ]
+        });
+
+        kMeans['generateStartingClustersByGivenCentroids']();
+
+        let cluster0 = kMeans.clusters[0];
+        let cluster1 = kMeans.clusters[1];
+
+        if (cluster0.centroid[0] < cluster1.centroid[0]) {
+            const tempCluster = cluster0;
+            cluster0 = cluster1;
+            cluster1 = tempCluster;
+        }
+
+        expect(cluster0.centroid).to.eql([1, 1]);
+        expect(cluster1.centroid).to.eql([0, 0]);
+    });
+
+    it('should throw when generating starting clusters by given centroids with not enough centroids', () => {
+        const kMeans = new KMeans({
+            clusterCount: 2,
+            centroids: [
+                [0, 0]
+            ]
+        });
+
+        const errorFn = () => kMeans['generateStartingClustersByGivenCentroids']();
+
+        expect(errorFn).to.throw;
+    });
+
+    it('should throw when generating starting clusters by given centroids with too many centroids', () => {
+        const kMeans = new KMeans({
+            clusterCount: 1,
+            centroids: [
+                [0, 0],
+                [1, 1]
+            ]
+        });
+
+        const errorFn = () => kMeans['generateStartingClustersByGivenCentroids']();
+
+        expect(errorFn).to.throw;
+    });
+
+    it('should throw when generating starting clusters by given centroids with no centroids', () => {
+        const kMeans = new KMeans({
+            clusterCount: 1,
+            centroids: []
+        });
+
+        const errorFn = () => kMeans['generateStartingClustersByGivenCentroids']();
+
+        expect(errorFn).to.throw;
+    });
+
+    it('should throw when generating starting clusters by given centroids with empty centroids', () => {
+        const kMeans = new KMeans({
+            clusterCount: 1,
+            centroids: null
+        });
+
+        const errorFn = () => kMeans['generateStartingClustersByGivenCentroids']();
+
+        expect(errorFn).to.throw;
+    });
+
+    it('should generate starting clusters by k-means++ correctly', () => {
+        const kMeans = new KMeans({
+            clusterCount: 2
+        });
+
+        kMeans['_vectors'] = [
+            [0, 0],
+            [1, 1],
+            [2, 2],
+            [3, 3]
+        ];
+
+        kMeans['_clusters'] = [ new Cluster([0, 0]) ];
+
+        kMeans['generateStartingClustersByKMeansPlusPlus']();
+
+        let cluster0 = kMeans.clusters[0];
+        let cluster1 = kMeans.clusters[1];
+
+        expect(cluster0.centroid).to.eql([0, 0]);
+        expect(cluster1.centroid).to.eql([3, 3]);
+    });
+
+    it('should throw when generating starting clusters by k-means++ with not enough vectors', () => {
+        const kMeans = new KMeans({
+            clusterCount: 2
+        });
+
+        kMeans['_vectors'] = [
+            [0, 0]
+        ];
+
+        const errorFn = () => kMeans['generateStartingClustersByKMeansPlusPlus']();
+
+        expect(errorFn).to.throw;
+    });
+
+    it('should throw when generating starting clusters by k-means++ with no vectors', () => {
+        const kMeans = new KMeans({
+            clusterCount: 2
+        });
+
+        kMeans['_vectors'] = [];
+
+        const errorFn = () => kMeans['generateStartingClustersByKMeansPlusPlus']();
+
+        expect(errorFn).to.throw;
+    });
+
+    it('should throw when generating starting clusters by k-means++ with null vectors', () => {
+        const kMeans = new KMeans({
+            clusterCount: 2
+        });
+
+        kMeans['_vectors'] = null;
+
+        const errorFn = () => kMeans['generateStartingClustersByKMeansPlusPlus']();
+
+        expect(errorFn).to.throw;
+    });
+
     it('should calculate mean squared error correctly when metric is ManhattanDistance', () => {
         const kMeans = new KMeans({
             metric: new ManhattanDistance()
         });
-        const cluster1 = new Cluster([0, 0]);
-        const cluster2 = new Cluster([-1, 1]);
+        const cluster0 = new Cluster([0, 0]);
+        const cluster1 = new Cluster([-1, 1]);
 
-        cluster1['_vectors'] = [
+        cluster0['_vectors'] = [
             [1, 1],
             [2, 3],
             [-1, 0]
         ];
 
-        cluster2['_vectors'] = [
+        cluster1['_vectors'] = [
             [-2, 5],
             [7, 7],
             [3, 0]
         ];
 
         kMeans['_clusters'] = [
-            cluster1,
-            cluster2
+            cluster0,
+            cluster1
         ];
 
         kMeans['calculateMeanSquaredError']();

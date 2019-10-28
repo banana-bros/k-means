@@ -5,6 +5,7 @@ import { Vector } from './type/Vector';
 import { Matrix } from './type/Matrix';
 import { Result } from './type/Result';
 import { Options, CentroidSelection, EmptyAction } from './type/Options';
+import { AssertionError } from 'assert';
 
 export class KMeans {
     private _vectors: Vector[] | Matrix = [];
@@ -83,8 +84,14 @@ export class KMeans {
     }
 
     private generateStartingClustersByRandomCentroids() {
+        const taken = [];
+
+        if (this.options.clusterCount > this.vectors.length) {
+            throw new Error(`Not enough vectors for ${this.options.clusterCount} clusters`);
+        }
+
         for (let i = 0; i < this.options.clusterCount; i++) {
-            const index = Math.round(Math.random() * this.vectors.length - 1);
+            const index = this.getUniqueRandomIndex(taken);
             const centroid = this.vectors[index];
             this.clusters.push(new Cluster(centroid));
         }
@@ -92,7 +99,7 @@ export class KMeans {
 
     private generateStartingClustersByGivenCentroids() {
         if (this.options.centroids === null || this.options.centroids.length !== this.options.clusterCount) {
-            throw new Error(`Number of centroids must equal ${this.options.clusterCount}`);
+            throw new Error(`Number of centroids must be equal to ${this.options.clusterCount}`);
         }
 
         for (let i = 0; i < this.options.clusterCount; i++) {
@@ -104,13 +111,20 @@ export class KMeans {
     }
 
     private generateStartingClustersByKMeansPlusPlus() {
-        const randomIndex = Math.round(Math.random() * this.vectors.length - 1);
-        let newCluster = new Cluster(this.vectors[randomIndex]);
+        let newCluster: Cluster;
 
-        this.clusters.push(newCluster);
+        if (this.vectors.length < this.options.clusterCount) {
+            throw new Error(`Number of vectors must be higher or equal to ${this.options.clusterCount}`);
+        }
 
-        for (let i = 1; i < this.options.clusterCount; i++) {
-            const res = this.generateNextCluster();
+        for (let i = 0; i < this.options.clusterCount; i++) {
+            let res: Vector;
+
+            if (this.clusters.length > 0) {
+                res = this.generateNextCluster();
+            } else {
+                res = this.vectors[this.getUniqueRandomIndex([])];
+            }
 
             newCluster = new Cluster();
             newCluster.centroid = res;
@@ -133,6 +147,17 @@ export class KMeans {
         }
 
         return res;
+    }
+
+    private getUniqueRandomIndex(taken: number[]): number {
+        let index = Infinity;
+
+        while (index === Infinity || taken.indexOf(index) > -1) {
+            index = Math.floor(Math.random() * this.vectors.length);
+        }
+
+        taken.push(index);
+        return index;
     }
 
     private calculateMeanSquaredError() {
