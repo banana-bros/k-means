@@ -2,7 +2,7 @@ import { expect, use, spy } from 'chai';
 import * as spies from 'chai-spies';
 import { KMeans, Cluster, ManhattanDistance } from '../../src';
 import { Vector } from '../../src/type/Vector';
-import { CentroidSelection } from '../../src/type/Options';
+import { CentroidSelection, EmptyAction } from '../../src/type/Options';
 import { kMaxLength } from 'buffer';
 
 use(spies);
@@ -414,6 +414,65 @@ describe('KMeans', () => {
         kMeans['calculateMeanSquaredError']();
 
         expect(kMeans.meanSquaredError).to.equal(46);
+    });
+
+    // handleEmptyCluster
+
+    it('should remove an empty cluster when EmptyAction.DROP is selected', () => {
+        const kMeans = new KMeans({
+            emptyAction: EmptyAction.DROP
+        });
+
+
+        const okCluster = new Cluster([0, 0]);
+        const emptyCluster = new Cluster([1, 1]);
+
+        kMeans['_clusters'] = [
+            okCluster,
+            emptyCluster
+        ];
+
+        kMeans['handleEmptyCluster'](emptyCluster);
+
+        expect(kMeans.clusters.length).to.equal(1);
+        expect(kMeans.clusters[0].centroid).to.eql([0, 0]);
+    });
+
+    it('should throw when trying to remove an empty cluster when the cluster is not part of k-means', () => {
+        const kMeans = new KMeans({
+            emptyAction: EmptyAction.DROP
+        });
+
+
+        const okCluster = new Cluster([0, 0]);
+        const emptyCluster = new Cluster([1, 1]);
+
+        kMeans['_clusters'] = [
+            okCluster
+        ];
+
+        const errorFn = () => kMeans['handleEmptyCluster'](new Cluster([1, 1]));
+
+        expect(errorFn).to.throw;
+    });
+
+    it('should throw when removing an empty cluster when EmptyAction.ERROR is selected', () => {
+        const kMeans = new KMeans({
+            emptyAction: EmptyAction.ERROR
+        });
+
+
+        const okCluster = new Cluster([0, 0]);
+        const emptyCluster = new Cluster([1, 1]);
+
+        kMeans['_clusters'] = [
+            okCluster,
+            emptyCluster
+        ];
+
+        const errorFn = () => kMeans['handleEmptyCluster'](emptyCluster);
+
+        expect(errorFn).to.throw;
     });
 
     it('should calculate k-Means with defined centers correctly', () => {
