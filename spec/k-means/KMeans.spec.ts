@@ -18,9 +18,6 @@ private next(): void {
 private recalculateClusterCentroids(): void {
 private handleEmptyCluster(cluster: Cluster): void {
 private getNearestCluster(vector: Vector): Cluster {
-get vectors(): Vector[] | Matrix {
-get clusters(): Cluster[] {
-get meanSquaredError(): number {
 */
 
 describe('KMeans', () => {
@@ -473,6 +470,34 @@ describe('KMeans', () => {
         const errorFn = () => kMeans['handleEmptyCluster'](emptyCluster);
 
         expect(errorFn).to.throw;
+    });
+
+    it('shuld return vectors correctly', () => {
+        const kMeans = new KMeans();
+
+        kMeans['_vectors'] = [ [0, 0], [1, 1] ];
+
+        expect(kMeans.vectors).to.eql([ [0, 0], [1, 1] ]);
+    });
+
+    it('shuld return clusters correctly', () => {
+        const kMeans = new KMeans();
+
+        kMeans['_clusters'] = [
+            new Cluster([0, 0]),
+            new Cluster([1, 1])
+        ];
+
+        expect(kMeans.clusters[0].centroid).to.eql([0, 0]);
+        expect(kMeans.clusters[1].centroid).to.eql([1, 1]);
+    });
+
+    it('shuld return meanSquaredError correctly', () => {
+        const kMeans = new KMeans();
+
+        kMeans['_meanSquaredError'] = 42;
+
+        expect(kMeans.meanSquaredError).to.equal(42);
     });
 
     it('should calculate k-Means with defined centers correctly', () => {
