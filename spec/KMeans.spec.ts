@@ -1,6 +1,6 @@
 import { expect, use, spy } from 'chai';
 import * as spies from 'chai-spies';
-import { KMeans, Cluster } from '../src';
+import { KMeans, Cluster, ManhattanDistance } from '../src';
 import { Vector } from '../src/type/Vector';
 import { CentroidSelection } from '../src/type/Options';
 
@@ -82,7 +82,7 @@ describe('KMeans', () => {
         expect(errorFn).to.throw;
     });
 
-    it('should calculate mean squared error correctly', () => {
+    it('should calculate mean squared error correctly when metric is EuclidianDistance', () => {
         const kMeans = new KMeans();
         const cluster1 = new Cluster([0, 0]);
         const cluster2 = new Cluster([-1, 1]);
@@ -107,6 +107,35 @@ describe('KMeans', () => {
         kMeans['calculateMeanSquaredError']();
 
         expect(kMeans.meanSquaredError).to.equal(25);
+    });
+
+    it('should calculate mean squared error correctly when metric is ManhattanDistance', () => {
+        const kMeans = new KMeans({
+            metric: new ManhattanDistance()
+        });
+        const cluster1 = new Cluster([0, 0]);
+        const cluster2 = new Cluster([-1, 1]);
+
+        cluster1['_vectors'] = [
+            [1, 1],
+            [2, 3],
+            [-1, 0]
+        ];
+
+        cluster2['_vectors'] = [
+            [-2, 5],
+            [7, 7],
+            [3, 0]
+        ];
+
+        kMeans['_clusters'] = [
+            cluster1,
+            cluster2
+        ];
+
+        kMeans['calculateMeanSquaredError']();
+
+        expect(kMeans.meanSquaredError).to.equal(46);
     });
 
     it('should calculate k-Means with defined centers correctly', () => {
