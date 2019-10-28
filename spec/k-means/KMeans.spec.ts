@@ -304,6 +304,89 @@ describe('KMeans', () => {
         expect(errorFn).to.throw;
     });
 
+    it('should get unique random index correctly', () => {
+        const kMeans = new KMeans();
+
+        kMeans['_vectors'] = [
+            [0, 0]
+        ];
+
+        expect(kMeans['getUniqueRandomIndex']([])).to.equal(0);
+    });
+
+    it('should get unique random index correctly and not reuse any', () => {
+        const kMeans = new KMeans();
+        const taken = [];
+
+        kMeans['_vectors'] = [
+            [0, 0],
+            [1, 1]
+        ];
+
+        let index0 = kMeans['getUniqueRandomIndex'](taken);
+        let index1 = kMeans['getUniqueRandomIndex'](taken);
+
+        if (index0 > index1) {
+            const tempIndex = index0;
+            index0 = index1;
+            index1 = tempIndex;
+        }
+
+        expect(index0).to.equal(0);
+        expect(index1).to.equal(1);
+    });
+
+    it('should fillup taken parameter when calling get unique random index', () => {
+        const kMeans = new KMeans();
+        const taken = [];
+
+        kMeans['_vectors'] = [
+            [0, 0]
+        ];
+
+        kMeans['getUniqueRandomIndex'](taken);
+
+        expect(taken).to.eql([ 0 ]);
+    });
+
+    it('should throw when trying to get a random index without any vectors', () => {
+        const kMeans = new KMeans();
+
+        kMeans['_vectors'] = [];
+
+        const errorFn = () => kMeans['getUniqueRandomIndex']([]);
+
+        expect(errorFn).to.throw;
+    });
+
+    it('should throw when trying to get a random index when all indizes are taken', () => {
+        const kMeans = new KMeans();
+        const taken = [0, 1];
+
+        kMeans['_vectors'] = [
+            [0, 0],
+            [1, 1]
+        ];
+
+        const errorFn = () => kMeans['getUniqueRandomIndex'](taken);
+
+        expect(errorFn).to.throw;
+    });
+
+    it('should throw when trying to get a random index when all indizes are taken', () => {
+        const kMeans = new KMeans();
+        const taken = [0, 1];
+
+        kMeans['_vectors'] = [
+            [0, 0],
+            [1, 1]
+        ];
+
+        const errorFn = () => kMeans['getUniqueRandomIndex'](taken);
+
+        expect(errorFn).to.throw;
+    });
+
     it('should calculate mean squared error correctly when metric is ManhattanDistance', () => {
         const kMeans = new KMeans({
             metric: new ManhattanDistance()

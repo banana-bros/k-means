@@ -150,6 +150,9 @@ export class KMeans {
     }
 
     private getUniqueRandomIndex(taken: number[]): number {
+        if (this.vectors.length === 0 || this.vectors.length === taken.length) {
+            throw new Error(`No more indizes to take`);
+        }
         let index = Infinity;
 
         while (index === Infinity || taken.indexOf(index) > -1) {
