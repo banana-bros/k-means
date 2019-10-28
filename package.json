@@ -14,9 +14,11 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.3",
+    "@types/chai-spies": "^1.0.1",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.11.2",
     "chai": "^4.2.0",
+    "chai-spies": "^1.0.0",
     "coveralls": "^3.0.7",
     "mocha": "^6.2.2",
     "nodemon": "^1.19.4",

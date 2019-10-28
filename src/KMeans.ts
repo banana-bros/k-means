@@ -137,15 +137,17 @@ export class KMeans {
 
     private calculateMeanSquaredError() {
         this._meanSquaredError = 0;
+        let vectorCount = 0;
 
         for (const cluster of this.clusters) {
             for (const vector of cluster.vectors) {
                 const distance = this.options.metric.calculate(vector, cluster.centroid);
                 this._meanSquaredError += Math.pow(distance, 2);
+                vectorCount++;
             }
         }
 
-        this._meanSquaredError /= this.vectors.length;
+        this._meanSquaredError /= vectorCount;
     }
 
     private centroidsHaveChanged(): boolean {
