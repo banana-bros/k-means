@@ -1,8 +1,8 @@
 import { expect, use, spy } from 'chai';
 import * as spies from 'chai-spies';
-import { KMeans, Cluster, ManhattanDistance } from '../src';
-import { Vector } from '../src/type/Vector';
-import { CentroidSelection } from '../src/type/Options';
+import { KMeans, Cluster, ManhattanDistance } from '../../src';
+import { Vector } from '../../src/type/Vector';
+import { CentroidSelection } from '../../src/type/Options';
 
 use(spies);
 
