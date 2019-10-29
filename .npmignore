@@ -7,3 +7,8 @@ coverage/
 node_modules/
 .gitignore
 tslint.json
+tsconfig.json
+tslint.json
+nodemon.json
+jasmine.json
+.travis.yml
