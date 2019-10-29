@@ -73,7 +73,7 @@ console.log(result.clusters[1].vectors);
 | `clusterCount`       | `number`             | `1`                            |
 | `maxIterations`      | `number`             | `100`                          |
 | `centroidSelection`  | `CentroidSelection`  | `CentroidSelection.RANDOM`     |
-| `centroids`          | `Vector[] | Matrix`  | `null`                         |
+| `centroids`          | `Vector[] \| Matrix`  | `null`                         |
 | `emptyAction`        | `EmptyAction`        | `EmptyAction.DROP`             |
 
 ### Metrics
