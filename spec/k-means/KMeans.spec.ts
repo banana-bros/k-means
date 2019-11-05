@@ -16,7 +16,6 @@ private generateNextCluster(): Vector {
 private centroidsHaveChanged(): boolean {
 private next(): void {
 private recalculateClusterCentroids(): void {
-private handleEmptyCluster(cluster: Cluster): void {
 private getNearestCluster(vector: Vector): Cluster {
 */
 
@@ -413,7 +412,6 @@ describe('KMeans', () => {
         expect(kMeans.meanSquaredError).to.equal(46);
     });
 
-    // handleEmptyCluster
 
     it('should remove an empty cluster when EmptyAction.DROP is selected', () => {
         const kMeans = new KMeans({
@@ -520,10 +518,12 @@ describe('KMeans', () => {
 
         let clusterA: Cluster = result.clusters[0];
         let clusterB: Cluster = result.clusters[1];
+        let hasChanged = false;
 
         if (result.clusters[0].centroid[0] < 3) {
             clusterA = result.clusters[1];
             clusterB = result.clusters[0];
+            hasChanged = true;
         }
 
         expect(result.iterations).to.be.within(1, 4);
@@ -541,5 +541,11 @@ describe('KMeans', () => {
             [1, 1],
             [1.5, 2]
         ]);
+
+        if (hasChanged) {
+            expect(result.clusterIndices).to.eql([0, 0, 1, 1, 1, 1, 1]);
+        } else {
+            expect(result.clusterIndices).to.eql([1, 1, 0, 0, 0, 0, 0]);
+        }
     });
 });

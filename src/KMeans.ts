@@ -33,8 +33,24 @@ export class KMeans {
         return {
             clusters: this.clusters,
             iterations: iterations,
-            meanSquaredError: this.meanSquaredError
+            meanSquaredError: this.meanSquaredError,
+            clusterIndices: this.getClusterIndices(vectors)
         };
+    }
+
+    private getClusterIndices(vectors: Vector[] | Matrix): number[] {
+        const clusterIndizes: number[] = [];
+
+        for (let i = 0; i < this.clusters.length; i++) {
+            const cluster = this.clusters[i];
+
+            for (let j = 0; j < vectors.length; j++) {
+                const clusterIndex = cluster.vectors.indexOf(vectors[j]);
+                clusterIndizes[j] = clusterIndex > -1 ? i : clusterIndizes[j];
+            }
+        }
+
+        return clusterIndizes;
     }
 
     public predict(vectors: Vector[] | Matrix): number[] {
