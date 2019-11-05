@@ -54,6 +54,8 @@ console.log(result.meanSquaredError);
 // 0.9252
 console.log(result.iterations);
 // 6
+console.log(result.clusterIndices);
+// [ 1, 1, 0, 0, 0, 0, 0 ]
 console.log(result.clusters[0].centroid);
 // [ 3.9, 5.1 ]
 console.log(result.clusters[0].vectors);
