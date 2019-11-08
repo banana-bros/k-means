@@ -11,3 +11,4 @@ tsconfig.json
 nodemon.json
 jasmine.json
 .travis.yml
+cc-test-reporter
