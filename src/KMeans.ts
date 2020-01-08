@@ -31,9 +31,9 @@ export class KMeans {
         this.calculateMeanSquaredError();
 
         return {
-            clusters: this.clusters,
+            clusters: this._clusters,
             iterations: iterations,
-            meanSquaredError: this.meanSquaredError,
+            meanSquaredError: this._meanSquaredError,
             clusterIndices: this.getClusterIndices(vectors)
         };
     }
@@ -41,8 +41,8 @@ export class KMeans {
     private getClusterIndices(vectors: Vector[] | Matrix): number[] {
         const clusterIndizes: number[] = [];
 
-        for (let i = 0; i < this.clusters.length; i++) {
-            const cluster = this.clusters[i];
+        for (let i = 0; i < this._clusters.length; i++) {
+            const cluster = this._clusters[i];
 
             for (let j = 0; j < vectors.length; j++) {
                 const clusterIndex = cluster.vectors.indexOf(vectors[j]);
@@ -58,7 +58,7 @@ export class KMeans {
 
         for (const vector of vectors) {
             const nearestCluster = this.getNearestCluster(vector);
-            result.push(this.clusters.indexOf(nearestCluster));
+            result.push(this._clusters.indexOf(nearestCluster));
         }
 
         return result;
@@ -102,14 +102,14 @@ export class KMeans {
     private generateStartingClustersByRandomCentroids() {
         const taken = [];
 
-        if (this.options.clusterCount > this.vectors.length) {
+        if (this.options.clusterCount > this._vectors.length) {
             throw new Error(`Not enough vectors for ${this.options.clusterCount} clusters`);
         }
 
         for (let i = 0; i < this.options.clusterCount; i++) {
             const index = this.getUniqueRandomIndex(taken);
-            const centroid = this.vectors[index];
-            this.clusters.push(new Cluster(centroid));
+            const centroid = this._vectors[index];
+            this._clusters.push(new Cluster(centroid));
         }
     }
 
@@ -122,29 +122,29 @@ export class KMeans {
             const cluster = new Cluster();
 
             cluster.centroid = this.options.centroids[i];
-            this.clusters.push(cluster);
+            this._clusters.push(cluster);
         }
     }
 
     private generateStartingClustersByKMeansPlusPlus() {
         let newCluster: Cluster;
 
-        if (this.vectors.length < this.options.clusterCount) {
+        if (this._vectors.length < this.options.clusterCount) {
             throw new Error(`Number of vectors must be higher or equal to ${this.options.clusterCount}`);
         }
 
         for (let i = 0; i < this.options.clusterCount; i++) {
             let res: Vector;
 
-            if (this.clusters.length > 0) {
+            if (this._clusters.length > 0) {
                 res = this.generateNextCluster();
             } else {
-                res = this.vectors[this.getUniqueRandomIndex([])];
+                res = this._vectors[this.getUniqueRandomIndex([])];
             }
 
             newCluster = new Cluster();
             newCluster.centroid = res;
-            this.clusters.push(newCluster);
+            this._clusters.push(newCluster);
         }
     }
 
@@ -152,7 +152,7 @@ export class KMeans {
         let res: Vector;
         let high = -Infinity;
 
-        for (const vector of this.vectors) {
+        for (const vector of this._vectors) {
             const nearest = this.getNearestCluster(vector);
             let dist = this.options.metric.calculate(vector, nearest.centroid);
 
@@ -166,13 +166,13 @@ export class KMeans {
     }
 
     private getUniqueRandomIndex(taken: number[]): number {
-        if (this.vectors.length === 0 || this.vectors.length === taken.length) {
+        if (this._vectors.length === 0 || this._vectors.length === taken.length) {
             throw new Error(`No more indizes to take`);
         }
         let index = Infinity;
 
         while (index === Infinity || taken.indexOf(index) > -1) {
-            index = Math.floor(Math.random() * this.vectors.length);
+            index = Math.floor(Math.random() * this._vectors.length);
         }
 
         taken.push(index);
@@ -183,7 +183,7 @@ export class KMeans {
         this._meanSquaredError = 0;
         let vectorCount = 0;
 
-        for (const cluster of this.clusters) {
+        for (const cluster of this._clusters) {
             for (const vector of cluster.vectors) {
                 const distance = this.options.metric.calculate(vector, cluster.centroid);
                 this._meanSquaredError += Math.pow(distance, 2);
@@ -197,7 +197,7 @@ export class KMeans {
     private centroidsHaveChanged(): boolean {
         let centroidsHaveChanged = false;
 
-        for (const cluster of this.clusters) {
+        for (const cluster of this._clusters) {
             centroidsHaveChanged = centroidsHaveChanged || cluster.centroidHasChanged();
         }
 
@@ -205,11 +205,11 @@ export class KMeans {
     }
 
     private next(): void {
-        for (const cluster of this.clusters) {
+        for (const cluster of this._clusters) {
             cluster.reset();
         }
 
-        for (const vector of this.vectors) {
+        for (const vector of this._vectors) {
             const nearestCluster = this.getNearestCluster(vector);
             nearestCluster.addVector(vector);
         }
@@ -218,7 +218,7 @@ export class KMeans {
     }
 
     private recalculateClusterCentroids(): void {
-        for (const cluster of this.clusters) {
+        for (const cluster of this._clusters) {
             if (cluster.vectors && cluster.vectors.length > 0) {
                 const newCentroid = this.options.centroidCalculator.calculate(cluster.vectors);
                 cluster.centroid = newCentroid;
@@ -240,10 +240,10 @@ export class KMeans {
     }
 
     private getNearestCluster(vector: Vector): Cluster {
-        let currentCluster = this.clusters[0];
+        let currentCluster = this._clusters[0];
 
-        for (let i = 1; i < this.clusters.length; i++) {
-            const cluster = this.clusters[i];
+        for (let i = 1; i < this._clusters.length; i++) {
+            const cluster = this._clusters[i];
             const newDistance = this.options.metric.calculate(vector, cluster.centroid);
             const currentDistance = this.options.metric.calculate(vector, currentCluster.centroid);
 

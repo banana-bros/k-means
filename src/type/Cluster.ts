@@ -6,7 +6,7 @@ export class Cluster {
     private _centroid: Vector;
 
     constructor(centroid: Vector = null) {
-        this.centroid = centroid;
+        this._centroid = centroid;
     }
 
     public addVector(vector: Vector): void {
@@ -55,7 +55,7 @@ export class Cluster {
         }
 
         for (let i = 0; i < this._centroid.length; i++) {
-            if (this._centroid[i] !== this.lastCentroid[i]) {
+            if (this._centroid[i] !== this._lastCentroid[i]) {
                 return true;
             }
         }
